@@ -45,6 +45,13 @@ class Server {
             })
         });
 
+        //Get Ticket finalizados
+        this.app.get('/finished-ticket', (req, res) => {
+            res.json({
+                finishedTicket: this.sockets.ticketList.finishedTickets
+            })
+        });
+
     }
 
     execute() {

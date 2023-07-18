@@ -10,18 +10,22 @@ class Sockets {
     socketEvents() {
         //On connection
         this.io.on('connection', (socket) => {
-            //Escuchar evetos del cliente
+            /**
+             * Evento para generar un nuevo ticket
+             */
             socket.on('new-ticket', (data, callback) => {
                 const newTicket = this.ticketList.newTicket();
                 callback(newTicket);
             });
 
-            socket.on('next-ticket', ({ agent, desk }, callback) => {
-                const myTicket = this.ticketList.attendTicket(agent, desk);
-                callback(myTicket);
+            socket.on('next-ticket', ({ user, finishedTicket }, callback) => {
+                const newTicket = this.ticketList.attendTicket(user, finishedTicket);
+                callback(newTicket);
+                //Emite los ultimos 13 tickets asignados
                 this.io.emit('last-ticket', this.ticketList.last13);
+                //Removemos el ticket finalizado
+                this.io.emit('end-ticket', this.ticketList.finishedTickets);
             });
-
         });
     }
 
